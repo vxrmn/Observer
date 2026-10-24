@@ -1,0 +1,41 @@
+@startuml
+class Demo {
+  +main(args: String[]): void
+}
+
+class Editor {
+  +eventManager: EventManager
+  -file: File
+  +openFile(file: String): void
+  +saveFile(): void
+}
+
+class EventManager <<Subject>> {
+  -listeners: Map<String, List<EventListener>>
+  +EventManager(operations: String...)
+  +subscribe(eventType: String, listener: EventListener): void
+  +unsubscribe(eventType: String, listener: EventListener): void
+  +notify(eventType: String, file: File): void
+}
+
+interface EventListener <<Observer>> {
+  +update(eventType: String, file: File): void
+}
+
+class EmailAlertsListener {
+  -email: String
+  +update(eventType: String, file: File): void
+}
+
+class LoggingListener {
+  -log: File
+  +update(eventType: String, file: File): void
+}
+
+Demo ..> Editor : membuat dan mengatur listener
+Editor --> EventManager : memicu event
+EventManager o--> "0..*" EventListener : memberi notifikasi
+EmailAlertsListener ..|> EventListener
+LoggingListener ..|> EventListener
+
+@enduml
